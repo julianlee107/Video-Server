@@ -7,7 +7,7 @@ import (
 )
 
 func AddUserCredential(loginName, pwd string) error {
-	stmtIns, err := dbConn.Prepare("INSERT  into user (login_name,pwd) VALUES (?,?)")
+	stmtIns, err := dbConn.Prepare("INSERT into user (login_name,pwd) VALUES (?,?)")
 	if err != nil {
 		return err
 	}
@@ -29,7 +29,10 @@ func GetUserCredential(loginName string) (string, error) {
 		return "", err
 	}
 	var pwd string
-	stmtOut.QueryRow(loginName).Scan(&pwd)
+	err = stmtOut.QueryRow(loginName).Scan(&pwd)
+	if err !=nil{
+		return "",err
+	}
 	defer stmtOut.Close()
 	return pwd, nil
 }

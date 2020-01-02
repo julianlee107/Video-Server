@@ -3,3 +3,5 @@
 /workspace.xml
 *.iml
 *.xml
+# Datasource local storage ignored files
+/dataSources/
