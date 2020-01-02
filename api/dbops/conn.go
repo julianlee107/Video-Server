@@ -12,7 +12,7 @@ var (
 )
 func init()  {
 	path := strings.Join([]string{userName, ":", password, "@tcp(", ip, ":", port, ")/", dbName, "?charset=utf8"}, "")
-	dbConn,err := sql.Open("mysql", path)
+	dbConn,err = sql.Open("mysql", path)
 	if err !=nil{
 		panic(err.Error())
 	}
