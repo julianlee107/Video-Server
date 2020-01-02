@@ -55,7 +55,7 @@ func RetrieveAllSession() (*sync.Map, error) {
 	}
 	rows, err := stmtOut.Query()
 	if err != nil {
-		log.Printf("%s\n", err)
+		log.Printf("%v\n", err)
 		return nil, err
 	}
 	for rows.Next() {
@@ -63,7 +63,7 @@ func RetrieveAllSession() (*sync.Map, error) {
 		var ttlstr string
 		var login_name string
 		if err := rows.Scan(&id, &ttlstr, &login_name); err != nil {
-			log.Printf("%s\n", err)
+			log.Printf("%v\n", err)
 			return nil, err
 		}
 		if ttl, err := strconv.ParseInt(ttlstr, 10, 64); err == nil {

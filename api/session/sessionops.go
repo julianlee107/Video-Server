@@ -30,7 +30,7 @@ func deleteExpireSession(sid string) {
 func LoadSessionFromDB() {
 	r, err := dbops.RetrieveAllSession()
 	if err != nil {
-		log.Printf("%s\n", err)
+		log.Printf("%v\n", err)
 		return
 	}
 	r.Range(func(key, value interface{}) bool {
@@ -43,7 +43,7 @@ func LoadSessionFromDB() {
 func GenerateNewSessionId(username string) string {
 	id, err := utils.NewUUID()
 	if err != nil {
-		log.Printf("%s\n", err)
+		log.Printf("%v\n", err)
 		return ""
 	}
 	currentTime := nowInMillSecond()
@@ -52,7 +52,7 @@ func GenerateNewSessionId(username string) string {
 	sessionMap.Store(id, simpleSession)
 	err = dbops.InsertSession(id, ttl, username)
 	if err != nil {
-		log.Printf("%s\n", err)
+		log.Printf("%v\n", err)
 		return ""
 	}
 	return id
