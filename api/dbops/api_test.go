@@ -1,9 +1,13 @@
 package dbops
 
-import "testing"
+import (
+	"crypto/sha256"
+	"fmt"
+	"testing"
+)
 
 func clearTables() {
-	dbConn.Exec("truncate users")
+	dbConn.Exec("truncate user")
 }
 
 func TestMain(m *testing.M)  {
@@ -27,7 +31,10 @@ func testAddUser(t *testing.T) {
 
 func testGetUser(t *testing.T) {
 	pwd, err := GetUserCredential("avenssi")
-	if pwd != "123" || err != nil {
+	crypt := sha256.New()
+	crypt.Write([]byte("123"))
+	newPwd := fmt.Sprintf("%x",crypt.Sum(nil))
+	if pwd != newPwd || err != nil {
 		t.Errorf("Error of GetUser")
 	}
 }

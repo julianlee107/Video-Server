@@ -1,14 +1,24 @@
 package dbops
 
-import "log"
+import (
+	"crypto/sha256"
+	"fmt"
+	"log"
+)
 
 func AddUserCredential(loginName, pwd string) error {
 	stmtIns, err := dbConn.Prepare("INSERT  into user (login_name,pwd) VALUES (?,?)")
 	if err != nil {
 		return err
 	}
-	stmtIns.Exec(loginName, pwd)
-	stmtIns.Close()
+	crypt := sha256.New()
+	crypt.Write([]byte(pwd))
+	pwd = fmt.Sprintf("%x",crypt.Sum(nil))
+	_, err = stmtIns.Exec(loginName, pwd)
+	if err !=nil{
+		panic(err)
+	}
+	defer stmtIns.Close()
 	return nil
 }
 
@@ -20,7 +30,7 @@ func GetUserCredential(loginName string) (string, error) {
 	}
 	var pwd string
 	stmtOut.QueryRow(loginName).Scan(&pwd)
-	stmtOut.Close()
+	defer stmtOut.Close()
 	return pwd, nil
 }
 
@@ -30,7 +40,9 @@ func DeleteUser(loginName string, pwd string) error {
 		log.Printf("Delete User Error Found: %v", err)
 		return err
 	}
-
+	crypt := sha256.New()
+	crypt.Write([]byte(pwd))
+	pwd = fmt.Sprintf("%x",crypt.Sum(nil))
 	_, err = stmtDel.Exec(loginName, pwd)
 	if err != nil {
 		return err
