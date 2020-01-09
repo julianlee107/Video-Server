@@ -31,7 +31,7 @@ func RetrieveSessionById(sid string) (*defs.SimpleSession, error) {
 	}
 	var ttl string
 	var username string
-	err = stmtOut.QueryRow(sid).Scan(&ttl, username)
+	err = stmtOut.QueryRow(sid).Scan(&ttl, &username)
 	if err != nil && err != sql.ErrNoRows {
 		panic(err.Error())
 		return nil, err

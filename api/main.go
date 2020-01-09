@@ -1,23 +1,20 @@
 package main
 
 import (
-	"github.com/julienschmidt/httprouter"
-	"log"
-	"net/http"
+	"Video-Server/api/dbops"
 )
 
-func Handler() *httprouter.Router {
-	router := httprouter.New()
-	router.POST("/", CreateUser)
-	return router
-
-}
+//func Handler() *httprouter.Router {
+//	router := httprouter.New()
+//	router.POST("/", CreateUser)
+//	return router
+//
+//}
 
 func main() {
 	//http.HandleFunc("/",RegisterHandler)
-	r := Handler()
-	e := http.ListenAndServe(":8000", r)
-	if e != nil {
-		log.Fatal(e)
+	_, err := dbops.AddNewVideo(1, "第一个视频")
+	if err != nil {
+		panic(err)
 	}
 }
