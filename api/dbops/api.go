@@ -5,12 +5,20 @@ import (
 	"Video-Server/api/utils"
 	"crypto/sha256"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"time"
 )
 
 func AddUserCredential(loginName, pwd string) error {
+	stmtOut, _ := dbConn.Prepare("select user.id from user where login_name=?")
+	rows := stmtOut.QueryRow(loginName).Scan()
+	if rows != sql.ErrNoRows {
+		log.Println("用户名重复")
+		return errors.New("用户名重复")
+	}
+	defer stmtOut.Close()
 	stmtIns, err := dbConn.Prepare("INSERT into user (login_name,pwd) VALUES (?,?)")
 	if err != nil {
 		return err
@@ -68,7 +76,7 @@ func GetUser(loginName string) (*defs.User, error) {
 	}
 	var id int
 	var pwd string
-	err = stmtOut.QueryRow(loginName).Scan(&id, &pwd)
+	err = stmtOut.QueryRow(loginName).Scan(&id, &pwd,&loginName)
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("%v", err)
 		return nil, err
